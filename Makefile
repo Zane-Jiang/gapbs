@@ -1,6 +1,6 @@
 # See LICENSE.txt for license details.
 
-CXX_FLAGS += -std=c++11 -O3 -Wall
+CXX_FLAGS += -std=c++11 -O3 -Wall  -no-pie -g  -L/${PCXL_ROOT}/lib -lInstruRuntime
 PAR_FLAG = -fopenmp
 
 ifneq (,$(findstring icpc,$(CXX)))
@@ -23,7 +23,7 @@ SUITE = $(KERNELS) converter
 all: $(SUITE)
 
 % : src/%.cc src/*.h
-	$(CXX) $(CXX_FLAGS) $< -o $@
+	$(CXX) $(CXX_FLAGS) $< -o $@	
 
 # Testing
 include test/test.mk
