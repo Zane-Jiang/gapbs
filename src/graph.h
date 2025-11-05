@@ -12,7 +12,7 @@
 
 #include "pvector.h"
 #include "util.h"
-
+# include "/home/jz/PCXL/hmalloc/include/cxl_new.hpp"
 
 /*
 GAP Benchmark Suite
