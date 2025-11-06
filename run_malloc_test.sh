@@ -151,4 +151,4 @@ enable_hmalloc_env
 check_cxl_conf
 check_conf
 flush_fs_caches
-numactl --cpunodebind=0 ./bc -f /home/jz/PCXL/benchmark/gapbs/benchmark/benchmark/graphs/urand.sg -i4 -n1
+/usr/bin/time -v  numactl --cpunodebind=0 ./bc -f /home/jz/PCXL/benchmark/gapbs/benchmark/benchmark/graphs/urand.sg -i4 -n1

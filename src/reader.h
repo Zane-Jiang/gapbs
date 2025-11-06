@@ -277,6 +277,7 @@ class Reader {
     }
     Timer t;
     t.Start();
+
     bool directed;
     SGOffset num_nodes, num_edges;
     DestID_ **index = nullptr, **inv_index = nullptr;
@@ -285,13 +286,26 @@ class Reader {
     file.read(reinterpret_cast<char*>(&num_edges), sizeof(SGOffset));
     file.read(reinterpret_cast<char*>(&num_nodes), sizeof(SGOffset));
     pvector<SGOffset> offsets(num_nodes+1);
-    // neighs = new DestID_[num_edges];
-    neighs = cxl_new_array<DestID_>(num_edges);
+    Timer t1;
+    t1.Start();
+    #if USE_CXL_NEW_NEIGHBORS
+      neighs = cxl_new_array<DestID_>(num_edges);
+    #else
+      neighs = new DestID_[num_edges];
+    #endif
+    t1.Stop();
+    PrintTime("Alloc Neighbor Time", t1.Seconds());
+    t1.Start();
     std::streamsize num_index_bytes = (num_nodes+1) * sizeof(SGOffset);
     std::streamsize num_neigh_bytes = num_edges * sizeof(DestID_);
     file.read(reinterpret_cast<char*>(offsets.data()), num_index_bytes);
     file.read(reinterpret_cast<char*>(neighs), num_neigh_bytes);
+    t1.Stop();
+    PrintTime("Read Data Time", t1.Seconds());
+    t1.Start();
     index = CSRGraph<NodeID_, DestID_>::GenIndex(offsets, neighs);
+    t1.Stop();
+    PrintTime("Gen Index Time", t1.Seconds());
     if (directed && invert) {
       inv_neighs = new DestID_[num_edges];
       file.read(reinterpret_cast<char*>(offsets.data()), num_index_bytes);
