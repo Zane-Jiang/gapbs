@@ -8,7 +8,7 @@ export PCXL_ROOT=/home/jz/PCXL
 
 function enable_hmalloc_env() {
     export HMALLOC_JEMALLOC=1
-    export HMALLOC_NODEMASK=4
+    export HMALLOC_NODEMASK=2
     export HMALLOC_MPOL_MODE=2
 }
 
@@ -137,7 +137,44 @@ check_conf()
   disable_swap
 }
 
+MEMSYS="/sys/devices/system/memory"
+START=10
+END=32
+offline_mem(){
+    for ((blk=$START; blk<=$END; blk++)); do
+        path="$MEMSYS/memory${blk}"
+        online_file="$path/online"
 
+        if [ ! -d "$path" ]; then
+            echo "[WARN] memory${blk} not exists, skip"
+            continue
+        fi
+
+        state=$(cat "$online_file")
+
+        echo 0 > "$online_file" 2>/dev/null && \
+            echo "[OK] offline memory${blk} " || \
+            echo "[FAIL] offline memory${blk} (maybe used)"
+done
+}
+
+online_mem(){
+    for ((blk=$START; blk<=$END; blk++)); do
+        path="$MEMSYS/memory${blk}"
+        online_file="$path/online"
+
+        if [ ! -d "$path" ]; then
+            echo "[WARN] memory${blk} not exists, skip"
+            continue
+        fi
+
+        state=$(cat "$online_file")
+
+        echo 1 > "$online_file" 2>/dev/null && \
+            echo "[OK] online memory${blk} " || \
+            echo "[FAIL] online memory${blk} (maybe )"
+    done
+}
 
 
 
@@ -147,8 +184,10 @@ if [ $# -eq 1 ]; then
     make clean && make -j$(nproc) 
 fi
 
-enable_hmalloc_env
-check_cxl_conf
-check_conf
-flush_fs_caches
-/usr/bin/time -v  numactl --cpunodebind=0 ./bc -f /home/jz/PCXL/benchmark/gapbs/benchmark/benchmark/graphs/urand.sg -i4 -n1
+offline_mem
+# online_mem
+# enable_hmalloc_env
+# check_cxl_conf
+# check_conf
+# flush_fs_caches
+# /usr/bin/time -v  numactl --cpunodebind=0  ./bc -f /home/jz/PCXL/benchmark/gapbs/benchmark/benchmark/graphs/urand.sg -i4 -n1
