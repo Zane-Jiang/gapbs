@@ -1,7 +1,7 @@
 # See LICENSE.txt for license details.
 
 CXX_FLAGS += -std=c++11 -O0 -Wall  -no-pie -g
-LIBS = -L${PCXL_ROOT}/lib -lhmalloc
+LIBS = -L${PCXL_ROOT}/lib
 
 PAR_FLAG = -fopenmp
 
