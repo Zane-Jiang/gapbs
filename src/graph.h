@@ -12,10 +12,7 @@
 
 #include "pvector.h"
 #include "util.h"
-# include "/home/jz/PCXL/hmalloc/include/cxl_new.hpp"
 
-#define USE_CXL_NEW_INDEX 0
-#define USE_CXL_NEW_NEIGHBORS 0
 /*
 GAP Benchmark Suite
 Class:  CSRGraph
@@ -120,32 +117,17 @@ class CSRGraph {
 
   void ReleaseResources() {
     if (out_index_ != nullptr)
-      #if USE_CXL_NEW_INDEX
-        cxl_delete_array<DestID_*>(out_index_);
-      #else
         delete[] out_index_;
-      #endif
+
 
     if (out_neighbors_ != nullptr)
-      #if USE_CXL_NEW_NEIGHBORS
-        cxl_delete_array<DestID_>(out_neighbors_);
-      #else   
         delete[] out_neighbors_;
-      #endif
-
     if (directed_) {
       if (in_index_ != nullptr)
-        #if USE_CXL_NEW_INDEX
-          cxl_delete_array<DestID_*>(in_index_);
-        #else
           delete[] in_index_;
-        #endif
       if (in_neighbors_ != nullptr)
-        #if USE_CXL_NEW_NEIGHBORS
-          cxl_delete_array<DestID_>(in_neighbors_);
-        #else
           delete[] in_neighbors_;
-        #endif
+
     }
   }
 

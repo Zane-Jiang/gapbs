@@ -10,5 +10,6 @@ tc
 
 test/out/*.out
 /result
+*_run/
 benchmark/benchmark
 benchmark/graphs/benchmark/benchmark/graphs*
