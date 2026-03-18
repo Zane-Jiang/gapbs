@@ -287,11 +287,7 @@ class Reader {
     pvector<SGOffset> offsets(num_nodes+1);
     Timer t1;
     t1.Start();
-    #if USE_CXL_NEW_NEIGHBORS
-      neighs = cxl_new_array<DestID_>(num_edges);
-    #else
-      neighs = new DestID_[num_edges];
-    #endif
+    neighs = new DestID_[num_edges];
     t1.Stop();
     PrintTime("Alloc Neighbor Time", t1.Seconds());
     t1.Start();
