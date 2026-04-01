@@ -3,7 +3,7 @@ export OMP_NUM_THREADS=120
 REBUILD=$1
 MODE=${2:-111}
 if [ "$MODE" == "latency" ]; then
-    source benchmark/script/run_measure_latency.sh
+    source benchmark/script/measurement/run_measure_latency.sh
 else
     source benchmark/script/run_common.sh
 fi
